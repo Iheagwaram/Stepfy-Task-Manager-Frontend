@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../config/apiConfig";
+
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -18,14 +20,16 @@ const Dashboard = () => {
       if (!token) return navigate("/login");
 
       try {
-        const resUser = await axios.get("http://localhost:5000/api/auth/me", {
-          headers: { "x-auth-token": token },
+        const resUser = await axios.get(`${API_BASE_URL}/tasks`, 
+            { headers: { "x-auth-token": token } 
         });
+
         setUser(resUser.data.user);
 
-        const resTasks = await axios.get("http://localhost:5000/api/tasks", {
-          headers: { "x-auth-token": token },
+        const resTasks = await axios.get(`${API_BASE_URL}/tasks`, { 
+            headers: { "x-auth-token": token } 
         });
+
         setTasks(resTasks.data);
       } catch (err) {
         console.error("Failed to fetch data", err.response.data);
@@ -44,7 +48,7 @@ const Dashboard = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/tasks",
+        `${API_BASE_URL}/tasks`,
         { title: taskTitle, category: taskCategory },
         { headers: { "x-auth-token": token } }
       );
@@ -62,7 +66,7 @@ const Dashboard = () => {
     const token = localStorage.getItem("token");
 
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+      await axios.delete(`${API_BASE_URL}/tasks/${id}`, {
         headers: { "x-auth-token": token },
       });
 
@@ -85,7 +89,7 @@ const Dashboard = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/tasks/${id}`,
+        `${API_BASE_URL}/tasks/${id}`,
         { title: editTitle, category: editCategory },
         { headers: { "x-auth-token": token } }
       );
